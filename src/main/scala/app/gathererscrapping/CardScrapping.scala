@@ -1,6 +1,6 @@
 package app.gathererscrapping
 
-import akka.actor.{Actor, ActorLogging, Props}
+import akka.actor.{Actor, ActorLogging}
 import app.gathererscrapping.Constants.gathererPageUrl
 import app.gathererscrapping.GathererScrappingFunctions._
 import org.jsoup.nodes.Document
@@ -10,11 +10,9 @@ class CardScrapping extends Actor with ActorLogging {
     case MultiverseIdMessage(multiverseId) =>
       val document = getDocument(buildCardUrl(multiverseId))
       if (!isDoubleCard(document)) {
-        val singleCardScrapping = Actors.system.actorOf(Props[SingleCardScrapping])
-        singleCardScrapping forward CardDetailsMessage(document, multiverseId)
+        Actors.singleCardScrapping forward CardDetailsMessage(document, multiverseId)
       } else {
-        val doubleCardScrapping = Actors.system.actorOf(Props[DoubleCardScrapping])
-        doubleCardScrapping forward CardDetailsMessage(document, multiverseId)
+        Actors.doubleCardScrapping forward CardDetailsMessage(document, multiverseId)
       }
   }
 
@@ -23,6 +21,7 @@ class CardScrapping extends Actor with ActorLogging {
 
 
   def isDoubleCard(document: Document): Boolean = document.getElementsByClass("rightCol").size() >= 2
+
 }
 
 

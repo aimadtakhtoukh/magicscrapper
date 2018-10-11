@@ -6,7 +6,8 @@ case class Card (
   setName : String = "",
   rarity : String = "",
   artist : String = "",
-  cardFaces : Array[CardFace] = Array.empty
+  cardFaces : Array[CardFace] = Array.empty,
+  legalities: Array[Legality]= Array.empty
 )
 
 case class CardFace (
@@ -20,10 +21,25 @@ case class CardFace (
   power : String = "",
   toughness : String = "",
   loyalty : String = "",
-  rulings : Array[Ruling] = Array.empty
+  rulings : Array[Ruling] = Array.empty,
+  languages : Array[Language] = Array.empty
+)
+
+case class Language(
+  multiverseId : String = "",
+  name: String = "",
+  types : String = "",
+  cardText : String = "",
+  flavorText : String = "",
+  language : String = ""
 )
 
 case class Ruling (
-  date : String,
-  rule : String
+  date : String = "",
+  rule : String = ""
+)
+
+case class Legality (
+  format : String = "",
+  legality : String = ""
 )

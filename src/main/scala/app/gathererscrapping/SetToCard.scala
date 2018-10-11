@@ -12,7 +12,7 @@ import Constants.multiverseRegex
 
 class SetToCard extends Actor with ActorLogging {
   var setSize = 0
-  val gson: Gson = new GsonBuilder().setPrettyPrinting().create()
+  val gson: Gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create()
   var cardList = new ListBuffer[Card]()
 
   override def receive: Receive = {

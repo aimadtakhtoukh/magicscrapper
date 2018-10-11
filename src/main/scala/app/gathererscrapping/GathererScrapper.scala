@@ -1,21 +1,24 @@
 package app.gathererscrapping
 
+import java.io.File
 import java.net.URLEncoder
 
 import akka.actor.{Actor, ActorLogging, Props}
 import app.beans.Card
-import app.gathererscrapping.Constants.gathererPageUrl
+import app.gathererscrapping.Constants.{gathererPageUrl, imageOutPath}
 import app.gathererscrapping.GathererScrappingFunctions._
 import org.jsoup.nodes.Document
 
 import scala.collection.JavaConverters._
 
 sealed trait GathererScrapperMessage
+
 case object StartMessage extends GathererScrapperMessage
 case class SetUrlMessage(setUrl : String) extends GathererScrapperMessage
 case class MultiverseIdMessage(multiverseId : String) extends GathererScrapperMessage
 case class CardDetailsMessage(document: Document, multiverseId : String) extends GathererScrapperMessage
 case class CardMessage(card : Card) extends GathererScrapperMessage
+case class LanguageCardMessage(language : String, multiverseId : String) extends GathererScrapperMessage
 case class JsonMessage(card : Card, json : String) extends GathererScrapperMessage
 case class SaveInFileMessage(setName : String, list: List[String]) extends GathererScrapperMessage
 case object StopMessage extends GathererScrapperMessage
@@ -34,7 +37,10 @@ class Master extends Actor with ActorLogging {
   override def receive: Receive = {
     case StartMessage =>
       log.info("Starting")
-      val setList = magicSetList.par
+      val file = new File(s"$imageOutPath")
+      file.mkdirs()
+      //val setList = magicSetList.par
+      val setList = "Innistrad" :: Nil
       setCount = setList.length
       log.info(s"Set count : $setCount")
       setList
