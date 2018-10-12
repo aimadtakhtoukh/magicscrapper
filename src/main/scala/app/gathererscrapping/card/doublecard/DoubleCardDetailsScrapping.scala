@@ -1,4 +1,4 @@
-package app.gathererscrapping.doublecard
+package app.gathererscrapping.card.doublecard
 
 import app.beans.{CardFace, Language, Ruling}
 import app.gathererscrapping.GathererScrappingFunctions.extractDetails

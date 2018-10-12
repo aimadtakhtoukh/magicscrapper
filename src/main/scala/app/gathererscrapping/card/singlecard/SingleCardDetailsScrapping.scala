@@ -1,4 +1,4 @@
-package app.gathererscrapping.singlecard
+package app.gathererscrapping.card.singlecard
 
 import app.beans.Ruling
 import app.gathererscrapping.GathererScrappingFunctions.extractDetails

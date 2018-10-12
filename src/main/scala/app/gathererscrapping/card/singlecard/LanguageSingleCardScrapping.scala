@@ -1,4 +1,4 @@
-package app.gathererscrapping.singlecard
+package app.gathererscrapping.card.singlecard
 
 import akka.actor.{Actor, ActorLogging}
 import app.beans.Language

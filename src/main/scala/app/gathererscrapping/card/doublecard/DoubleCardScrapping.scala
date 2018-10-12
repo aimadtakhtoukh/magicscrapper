@@ -1,4 +1,4 @@
-package app.gathererscrapping.doublecard
+package app.gathererscrapping.card.doublecard
 
 import akka.actor.{Actor, ActorLogging}
 import akka.pattern.ask
@@ -6,6 +6,7 @@ import akka.util.Timeout
 import app.beans._
 import app.gathererscrapping.GathererScrappingFunctions._
 import app.gathererscrapping._
+import app.gathererscrapping.card.CardScrapping
 import org.jsoup.nodes.Document
 
 import scala.collection.JavaConverters._
@@ -13,7 +14,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.{Failure, Success, Try}
 
-class DoubleCardScrapping extends Actor with ActorLogging with DoubleCardDetailsScrapping {
+class DoubleCardScrapping extends Actor with ActorLogging with CardScrapping with DoubleCardDetailsScrapping {
   override def receive: Receive = {
     case CardDetailsMessage(document, multiverseId) =>
       val (leftSideDetails, rightSideDetails) = detailsFromDocument(document)
@@ -22,8 +23,6 @@ class DoubleCardScrapping extends Actor with ActorLogging with DoubleCardDetails
 
       val languageUrl = buildLanguageUrl(multiverseId)
       val languagesToMultiverseId = ("English", multiverseId) :: otherLanguagesFromUrl(languageUrl)
-
-      languagesToMultiverseId.map(_._2).foreach(downloadImageFromMultiverseId)
 
       val (leftSideLanguage, rightSideLanguage) = languagesToMultiverseId
         .map(languageInfoToForeignCard)
@@ -100,17 +99,5 @@ class DoubleCardScrapping extends Actor with ActorLogging with DoubleCardDetails
     implicit val timeout: Timeout = Timeout(30 seconds)
     val future = Actors.languageDoubleCardScrapping ? LanguageCardMessage(languageInfo._1, languageInfo._2)
     Await.result(future, timeout.duration).asInstanceOf[(Language, Language)]
-  }
-
-  def legalitiesFromMultiverseId(multiverseId : String): Array[Legality] = {
-    implicit val timeout: Timeout = Timeout(30 seconds)
-    val future = Actors.legalityScrapper ? MultiverseIdMessage(multiverseId)
-    Await.result(future, timeout.duration).asInstanceOf[Array[Legality]]
-  }
-
-  def downloadImageFromMultiverseId(multiverseId : String) : Unit = {
-    implicit val timeout: Timeout = Timeout(30 seconds)
-    val future = Actors.cardImageDownload ? MultiverseIdMessage(multiverseId)
-    Await.ready(future, timeout.duration)
   }
 }

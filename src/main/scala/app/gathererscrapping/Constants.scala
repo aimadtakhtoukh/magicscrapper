@@ -3,8 +3,8 @@ package app.gathererscrapping
 import akka.actor.{ActorRef, ActorSystem, Props}
 import akka.routing.RoundRobinPool
 import app.gathererscrapping.Constants.gathererPageUrl
-import app.gathererscrapping.doublecard.{DoubleCardScrapping, LanguageDoubleCardScrapping}
-import app.gathererscrapping.singlecard.{LanguageSingleCardScrapping, SingleCardScrapping}
+import app.gathererscrapping.card.doublecard.{DoubleCardScrapping, LanguageDoubleCardScrapping}
+import app.gathererscrapping.card.singlecard.{LanguageSingleCardScrapping, SingleCardScrapping}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, TextNode}
 import org.jsoup.select.Elements
@@ -22,9 +22,7 @@ object Constants {
 
 object Actors {
   val system = ActorSystem("GathererScrapper")
-  val master: ActorRef = system.actorOf(
-    Props[Master], name = "master"
-  )
+  val master: ActorRef = system.actorOf(Props[Master], name = "master")
   val singleCardScrapping: ActorRef = system.actorOf(
     Props[SingleCardScrapping].withRouter(RoundRobinPool(4))
   )
@@ -38,16 +36,13 @@ object Actors {
     Props[LanguageDoubleCardScrapping].withRouter(RoundRobinPool(4))
   )
   val cardWorkerRouter: ActorRef = system.actorOf(
-    Props[CardScrapping].withRouter(RoundRobinPool(4))
+    Props[CardScrapper].withRouter(RoundRobinPool(4))
   )
   val legalityScrapper: ActorRef = system.actorOf(
     Props[LegalityScrapper].withRouter(RoundRobinPool(4))
   )
   val saveInFile: ActorRef = system.actorOf(
     Props[SaveInFile].withRouter(RoundRobinPool(4))
-  )
-  val cardImageDownload: ActorRef = system.actorOf(
-    Props[CardImageDownload].withRouter(RoundRobinPool(4))
   )
 }
 
@@ -58,7 +53,7 @@ object GathererScrappingFunctions {
       .header("Accept-Language","en")
       .cookie("CardDatabaseSettings", "0=1&1=28&2=0&14=1&3=13&4=0&5=0&6=15&7=1&8=0&9=1&10=16&11=7&12=8&15=1&16=0&13=")
       .ignoreHttpErrors(true)
-      .timeout(30 * 1000)
+      .timeout(60 * 1000)
       .maxBodySize(0)
     conn.get()
   }

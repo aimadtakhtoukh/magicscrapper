@@ -21,6 +21,7 @@ case class CardMessage(card : Card) extends GathererScrapperMessage
 case class LanguageCardMessage(language : String, multiverseId : String) extends GathererScrapperMessage
 case class JsonMessage(card : Card, json : String) extends GathererScrapperMessage
 case class SaveInFileMessage(setName : String, list: List[String]) extends GathererScrapperMessage
+case class ImageSavedMessage() extends GathererScrapperMessage
 case object StopMessage extends GathererScrapperMessage
 
 object GathererScrapper extends App {
@@ -39,8 +40,7 @@ class Master extends Actor with ActorLogging {
       log.info("Starting")
       val file = new File(s"$imageOutPath")
       file.mkdirs()
-      //val setList = magicSetList.par
-      val setList = "Innistrad" :: Nil
+      val setList = magicSetList
       setCount = setList.length
       log.info(s"Set count : $setCount")
       setList

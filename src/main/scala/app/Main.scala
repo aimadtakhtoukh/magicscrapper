@@ -1,6 +1,6 @@
 package app
 
-object Main extends App {
+object Main {
 
 }
 
